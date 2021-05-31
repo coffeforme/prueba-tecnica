@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="pruebadbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="uid" />
+          </Key>
+          <Property Name="uid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" />
+          <Property Name="description" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="uid" />
+          </Key>
+          <Property Name="uid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="username" Type="varchar" MaxLength="60" Nullable="false" />
+          <Property Name="password" Type="varbinary(max)" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="firstname" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="lastname" Type="varchar" MaxLength="50" />
+          <Property Name="fullname" Type="varchar" MaxLength="101" StoreGeneratedPattern="Computed" />
+          <Property Name="cel" Type="varchar" MaxLength="10" />
+          <Property Name="address" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="salt" Type="varbinary(max)" Nullable="false" />
+          <Property Name="requirechangepass" Type="bit" Nullable="false" />
+          <Property Name="confirmationcode" Type="varchar" MaxLength="6" />
+          <Property Name="sayhi" Type="bit" Nullable="false" />
+          <Property Name="emailconfirmed" Type="bit" Nullable="false" />
+          <Property Name="state" Type="bit" Nullable="false" />
+          <Property Name="date" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="userrole">
+          <Key>
+            <PropertyRef Name="uid" />
+          </Key>
+          <Property Name="uid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="date" Type="date" />
+          <Property Name="id_user" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="id_role" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_userroletorole">
+          <End Role="role" Type="Self.role" Multiplicity="1" />
+          <End Role="userrole" Type="Self.userrole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="uid" />
+            </Principal>
+            <Dependent Role="userrole">
+              <PropertyRef Name="id_role" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_userroletouser">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="userrole" Type="Self.userrole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="uid" />
+            </Principal>
+            <Dependent Role="userrole">
+              <PropertyRef Name="id_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="getuser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="auth">
+          <Parameter Name="username" Type="varchar" Mode="In" />
+          <Parameter Name="uid" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <EntityContainer Name="pruebadbModelStoreContainer">
+          <EntitySet Name="role" EntityType="Self.role" Schema="auth" store:Type="Tables" />
+          <EntitySet Name="user" EntityType="Self.user" Schema="auth" store:Type="Tables" />
+          <EntitySet Name="userrole" EntityType="Self.userrole" Schema="auth" store:Type="Tables" />
+          <AssociationSet Name="fk_userroletorole" Association="Self.fk_userroletorole">
+            <End Role="role" EntitySet="role" />
+            <End Role="userrole" EntitySet="userrole" />
+          </AssociationSet>
+          <AssociationSet Name="fk_userroletouser" Association="Self.fk_userroletouser">
+            <End Role="user" EntitySet="user" />
+            <End Role="userrole" EntitySet="userrole" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="pruebadbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="uid" />
+          </Key>
+          <Property Name="uid" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="userrole" Relationship="Self.fk_userroletorole" FromRole="role" ToRole="userrole" />
+        </EntityType>
+        <EntityType Name="userrole">
+          <Key>
+            <PropertyRef Name="uid" />
+          </Key>
+          <Property Name="uid" Type="Guid" Nullable="false" />
+          <Property Name="date" Type="DateTime" Precision="0" />
+          <Property Name="id_user" Type="Guid" Nullable="false" />
+          <Property Name="id_role" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="role" Relationship="Self.fk_userroletorole" FromRole="userrole" ToRole="role" />
+          <NavigationProperty Name="user" Relationship="pruebadbModel.fk_userroletouser" FromRole="userrole" ToRole="user" />
+        </EntityType>
+        <Association Name="fk_userroletorole">
+          <End Role="role" Type="Self.role" Multiplicity="1" />
+          <End Role="userrole" Type="Self.userrole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="uid" />
+            </Principal>
+            <Dependent Role="userrole">
+              <PropertyRef Name="id_role" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="authContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="role" EntityType="Self.role" />
+          <EntitySet Name="userrole" EntityType="Self.userrole" />
+          <AssociationSet Name="fk_userroletorole" Association="Self.fk_userroletorole">
+            <End Role="role" EntitySet="role" />
+            <End Role="userrole" EntitySet="userrole" />
+          </AssociationSet>
+          <FunctionImport Name="getuser" ReturnType="Collection(pruebadbModel.getuser_Result)">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="uid" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <EntitySet Name="user" EntityType="pruebadbModel.user" />
+          <AssociationSet Name="fk_userroletouser" Association="pruebadbModel.fk_userroletouser">
+            <End Role="user" EntitySet="user" />
+            <End Role="userrole" EntitySet="userrole" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="getuser_Result">
+          <Property Type="String" Name="username" Nullable="false" MaxLength="60" />
+          <Property Type="String" Name="email" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="firstname" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="lastname" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="fullname" Nullable="true" MaxLength="101" />
+          <Property Type="String" Name="cel" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="address" Nullable="false" MaxLength="50" />
+          <Property Type="Binary" Name="salt" Nullable="false" />
+          <Property Type="Boolean" Name="requirechangepass" Nullable="false" />
+          <Property Type="String" Name="confirmationcode" Nullable="true" MaxLength="6" />
+          <Property Type="Boolean" Name="sayhi" Nullable="false" />
+          <Property Type="Boolean" Name="emailconfirmed" Nullable="false" />
+          <Property Type="Boolean" Name="state" Nullable="false" />
+          <Property Type="DateTime" Name="date" Nullable="false" Precision="23" />
+          <Property Type="String" Name="description" Nullable="true" MaxLength="50" />
+          <Property Type="Guid" Name="id_role" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="uid" />
+          </Key>
+          <Property Name="uid" Type="Guid" Nullable="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="firstname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="lastname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="fullname" Type="String" MaxLength="101" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="cel" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="address" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="salt" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="requirechangepass" Type="Boolean" Nullable="false" />
+          <Property Name="confirmationcode" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="sayhi" Type="Boolean" Nullable="false" />
+          <Property Name="emailconfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="state" Type="Boolean" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="userrole" Relationship="pruebadbModel.fk_userroletouser" FromRole="user" ToRole="userrole" />
+        </EntityType>
+        <Association Name="fk_userroletouser">
+          <End Type="pruebadbModel.user" Role="user" Multiplicity="1" />
+          <End Type="pruebadbModel.userrole" Role="userrole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="uid" />
+            </Principal>
+            <Dependent Role="userrole">
+              <PropertyRef Name="id_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="pruebadbModelStoreContainer" CdmEntityContainer="authContext">
+          <EntitySetMapping Name="role">
+            <EntityTypeMapping TypeName="pruebadbModel.role">
+              <MappingFragment StoreEntitySet="role">
+                <ScalarProperty Name="uid" ColumnName="uid" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="userrole">
+            <EntityTypeMapping TypeName="pruebadbModel.userrole">
+              <MappingFragment StoreEntitySet="userrole">
+                <ScalarProperty Name="uid" ColumnName="uid" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="id_user" ColumnName="id_user" />
+                <ScalarProperty Name="id_role" ColumnName="id_role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="getuser" FunctionName="pruebadbModel.Store.getuser">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="pruebadbModel.getuser_Result">
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="firstname" ColumnName="firstname" />
+                <ScalarProperty Name="lastname" ColumnName="lastname" />
+                <ScalarProperty Name="fullname" ColumnName="fullname" />
+                <ScalarProperty Name="cel" ColumnName="cel" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="salt" ColumnName="salt" />
+                <ScalarProperty Name="requirechangepass" ColumnName="requirechangepass" />
+                <ScalarProperty Name="confirmationcode" ColumnName="confirmationcode" />
+                <ScalarProperty Name="sayhi" ColumnName="sayhi" />
+                <ScalarProperty Name="emailconfirmed" ColumnName="emailconfirmed" />
+                <ScalarProperty Name="state" ColumnName="state" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="id_role" ColumnName="id_role" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="user">
+            <EntityTypeMapping TypeName="pruebadbModel.user">
+              <MappingFragment StoreEntitySet="user">
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="state" ColumnName="state" />
+                <ScalarProperty Name="emailconfirmed" ColumnName="emailconfirmed" />
+                <ScalarProperty Name="sayhi" ColumnName="sayhi" />
+                <ScalarProperty Name="confirmationcode" ColumnName="confirmationcode" />
+                <ScalarProperty Name="requirechangepass" ColumnName="requirechangepass" />
+                <ScalarProperty Name="salt" ColumnName="salt" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="cel" ColumnName="cel" />
+                <ScalarProperty Name="fullname" ColumnName="fullname" />
+                <ScalarProperty Name="lastname" ColumnName="lastname" />
+                <ScalarProperty Name="firstname" ColumnName="firstname" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="uid" ColumnName="uid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

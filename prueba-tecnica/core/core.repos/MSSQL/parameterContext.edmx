@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="pruebadbModel1.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="action">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="smallint" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="page">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="varchar" MaxLength="50" />
+          <Property Name="icon" Type="varchar(max)" />
+          <Property Name="route" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="pagerole">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_role" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="id_page" Type="int" Nullable="false" />
+          <Property Name="date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="pageroleaction">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_pagerole" Type="int" Nullable="false" />
+          <Property Name="id_action" Type="smallint" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_pageroleactiontoaction">
+          <End Role="action" Type="Self.action" Multiplicity="1" />
+          <End Role="pageroleaction" Type="Self.pageroleaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="action">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="pageroleaction">
+              <PropertyRef Name="id_action" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_pageroleactiontopagerole">
+          <End Role="pagerole" Type="Self.pagerole" Multiplicity="1" />
+          <End Role="pageroleaction" Type="Self.pageroleaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pagerole">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="pageroleaction">
+              <PropertyRef Name="id_pagerole" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_pageroletopage">
+          <End Role="page" Type="Self.page" Multiplicity="1" />
+          <End Role="pagerole" Type="Self.pagerole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="page">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="pagerole">
+              <PropertyRef Name="id_page" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="getpages" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="parameter">
+          <Parameter Name="uid" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="getpagesbyrole" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="parameter">
+          <Parameter Name="uid" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <EntityContainer Name="pruebadbModel1StoreContainer">
+          <EntitySet Name="action" EntityType="Self.action" Schema="parameter" store:Type="Tables" />
+          <EntitySet Name="page" EntityType="Self.page" Schema="parameter" store:Type="Tables" />
+          <EntitySet Name="pagerole" EntityType="Self.pagerole" Schema="parameter" store:Type="Tables" />
+          <EntitySet Name="pageroleaction" EntityType="Self.pageroleaction" Schema="parameter" store:Type="Tables" />
+          <AssociationSet Name="fk_pageroleactiontoaction" Association="Self.fk_pageroleactiontoaction">
+            <End Role="action" EntitySet="action" />
+            <End Role="pageroleaction" EntitySet="pageroleaction" />
+          </AssociationSet>
+          <AssociationSet Name="fk_pageroleactiontopagerole" Association="Self.fk_pageroleactiontopagerole">
+            <End Role="pagerole" EntitySet="pagerole" />
+            <End Role="pageroleaction" EntitySet="pageroleaction" />
+          </AssociationSet>
+          <AssociationSet Name="fk_pageroletopage" Association="Self.fk_pageroletopage">
+            <End Role="page" EntitySet="page" />
+            <End Role="pagerole" EntitySet="pagerole" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="pruebadbModel1" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="page">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="icon" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="route" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="pagerole" Relationship="Self.fk_pageroletopage" FromRole="page" ToRole="pagerole" />
+        </EntityType>
+        <EntityType Name="pagerole">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_role" Type="Guid" Nullable="false" />
+          <Property Name="id_page" Type="Int32" Nullable="false" />
+          <Property Name="date" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="page" Relationship="Self.fk_pageroletopage" FromRole="pagerole" ToRole="page" />
+          <NavigationProperty Name="pageroleaction" Relationship="pruebadbModel1.fk_pageroleactiontopagerole" FromRole="pagerole" ToRole="pageroleaction" />
+        </EntityType>
+        <Association Name="fk_pageroletopage">
+          <End Role="page" Type="Self.page" Multiplicity="1" />
+          <End Role="pagerole" Type="Self.pagerole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="page">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="pagerole">
+              <PropertyRef Name="id_page" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="parameterContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="page" EntityType="Self.page" />
+          <EntitySet Name="pagerole" EntityType="Self.pagerole" />
+          <AssociationSet Name="fk_pageroletopage" Association="Self.fk_pageroletopage">
+            <End Role="page" EntitySet="page" />
+            <End Role="pagerole" EntitySet="pagerole" />
+          </AssociationSet>
+          <FunctionImport Name="getpages" ReturnType="Collection(pruebadbModel1.getpages_Result)">
+          <Parameter Name="uid" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="getpagesbyrole" ReturnType="Collection(pruebadbModel1.getpagesbyrole_Result)">
+          <Parameter Name="uid" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <EntitySet Name="action" EntityType="pruebadbModel1.action" />
+          <EntitySet Name="pageroleaction" EntityType="pruebadbModel1.pageroleaction" />
+          <AssociationSet Name="fk_pageroleactiontoaction" Association="pruebadbModel1.fk_pageroleactiontoaction">
+            <End Role="action" EntitySet="action" />
+            <End Role="pageroleaction" EntitySet="pageroleaction" />
+          </AssociationSet>
+          <AssociationSet Name="fk_pageroleactiontopagerole" Association="pruebadbModel1.fk_pageroleactiontopagerole">
+            <End Role="pagerole" EntitySet="pagerole" />
+            <End Role="pageroleaction" EntitySet="pageroleaction" />
+          </AssociationSet>
+          </EntityContainer>
+        <ComplexType Name="getpages_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="Guid" Name="id_role" Nullable="false" />
+          <Property Type="Int32" Name="id_page" Nullable="false" />
+          <Property Type="String" Name="title" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="icon" Nullable="true" />
+          <Property Type="String" Name="route" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="actions" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="getpagesbyrole_Result">
+          <Property Type="Int32" Name="id" Nullable="true" />
+          <Property Type="Guid" Name="id_role" Nullable="false" />
+          <Property Type="Int32" Name="id_page" Nullable="false" />
+          <Property Type="String" Name="title" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="icon" Nullable="true" />
+          <Property Type="String" Name="route" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="action">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int16" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="pageroleaction" Relationship="pruebadbModel1.fk_pageroleactiontoaction" FromRole="action" ToRole="pageroleaction" />
+        </EntityType>
+        <EntityType Name="pageroleaction">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_pagerole" Type="Int32" Nullable="false" />
+          <Property Name="id_action" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="action" Relationship="pruebadbModel1.fk_pageroleactiontoaction" FromRole="pageroleaction" ToRole="action" />
+          <NavigationProperty Name="pagerole" Relationship="pruebadbModel1.fk_pageroleactiontopagerole" FromRole="pageroleaction" ToRole="pagerole" />
+        </EntityType>
+        <Association Name="fk_pageroleactiontoaction">
+          <End Type="pruebadbModel1.action" Role="action" Multiplicity="1" />
+          <End Type="pruebadbModel1.pageroleaction" Role="pageroleaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="action">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="pageroleaction">
+              <PropertyRef Name="id_action" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_pageroleactiontopagerole">
+          <End Type="pruebadbModel1.pagerole" Role="pagerole" Multiplicity="1" />
+          <End Type="pruebadbModel1.pageroleaction" Role="pageroleaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pagerole">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="pageroleaction">
+              <PropertyRef Name="id_pagerole" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="pruebadbModel1StoreContainer" CdmEntityContainer="parameterContext">
+          <EntitySetMapping Name="page">
+            <EntityTypeMapping TypeName="pruebadbModel1.page">
+              <MappingFragment StoreEntitySet="page">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="icon" ColumnName="icon" />
+                <ScalarProperty Name="route" ColumnName="route" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="pagerole">
+            <EntityTypeMapping TypeName="pruebadbModel1.pagerole">
+              <MappingFragment StoreEntitySet="pagerole">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="id_role" ColumnName="id_role" />
+                <ScalarProperty Name="id_page" ColumnName="id_page" />
+                <ScalarProperty Name="date" ColumnName="date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="getpages" FunctionName="pruebadbModel1.Store.getpages">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="pruebadbModel1.getpages_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="id_role" ColumnName="id_role" />
+                <ScalarProperty Name="id_page" ColumnName="id_page" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="icon" ColumnName="icon" />
+                <ScalarProperty Name="route" ColumnName="route" />
+                <ScalarProperty Name="actions" ColumnName="actions" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="getpagesbyrole" FunctionName="pruebadbModel1.Store.getpagesbyrole">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="pruebadbModel1.getpagesbyrole_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="id_role" ColumnName="id_role" />
+                <ScalarProperty Name="id_page" ColumnName="id_page" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="icon" ColumnName="icon" />
+                <ScalarProperty Name="route" ColumnName="route" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="action">
+            <EntityTypeMapping TypeName="pruebadbModel1.action">
+              <MappingFragment StoreEntitySet="action">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="pageroleaction">
+            <EntityTypeMapping TypeName="pruebadbModel1.pageroleaction">
+              <MappingFragment StoreEntitySet="pageroleaction">
+                <ScalarProperty Name="id_action" ColumnName="id_action" />
+                <ScalarProperty Name="id_pagerole" ColumnName="id_pagerole" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
